@@ -78,6 +78,10 @@ jobs:
             if (size != 0 && nmemb > SIZE_MAX / size) { errno = ENOMEM; return NULL; }
             return realloc(ptr, nmemb * size);
           }
+          /* Desktop-only GL calls that WebGL/GLES omits — no-op stubs so addons that use them
+             (e.g. ofxBox2d's debug draw calls glPointSize) still link. Point size on the web is
+             set in shaders, so a no-op is harmless. */
+          void glPointSize(float size) { (void)size; }
           EOF
           cp of/scripts/templates/emscripten/Makefile of/apps/myApps/sketch/
           cp of/scripts/templates/emscripten/config.make of/apps/myApps/sketch/
