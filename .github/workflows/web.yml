@@ -81,6 +81,10 @@ jobs:
           EOF
           cp of/scripts/templates/emscripten/Makefile of/apps/myApps/sketch/
           cp of/scripts/templates/emscripten/config.make of/apps/myApps/sketch/
+          # Some older addons (e.g. the liquidfun bundled inside ofxBox2d) call printf/malloc
+          # without including the headers, which modern clang (C++23) rejects. Force-include the
+          # C stdio/stdlib headers project-wide (valid in both C and C++) so those addons compile.
+          printf '\nPROJECT_CFLAGS = -include stdio.h -include stdlib.h\n' >> of/apps/myApps/sketch/config.make
           # Auto-include openFrameworks addons the sketch #includes (e.g. ofxGui), so common
           # addon-based sketches build with no manual setup. Only addons that ship with
           # openFrameworks (present in of/addons) are added — a bundled addon whose header the
